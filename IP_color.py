@@ -34,8 +34,20 @@ def get_globale_color():
     print(glob_ip_address)
     return [glob_ip_address, glob_ip_address_color]
 
+def get_lan_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(0)
+    try:
+        s.connect(('10.254.254.254', 1))  # Use a non-routable IP for UDP
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = '127.0.0.1'
+    finally:
+        s.close()
+    return ip
+
 def get_locale_color():
-    loc_ip_address = socket.gethostbyname(socket.gethostname())
+    loc_ip_address = get_lan_ip()
     loc_ip_address_array = loc_ip_address.split('.')[1:]
     loc_ip_address_color = ''
     for n in loc_ip_address_array:
